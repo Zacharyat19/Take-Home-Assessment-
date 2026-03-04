@@ -1,0 +1,4 @@
+/mnt/c/Users/Zach Taylor/github/Take-Home-Assessment-/CMakeFiles/dashboard.dir
+/mnt/c/Users/Zach Taylor/github/Take-Home-Assessment-/CMakeFiles/edit_cache.dir
+/mnt/c/Users/Zach Taylor/github/Take-Home-Assessment-/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/Zach Taylor/github/Take-Home-Assessment-/CMakeFiles/dashboard_autogen.dir
