@@ -9,11 +9,11 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-# Find the Qt 6 libraries you installed
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+# Add Charts to the list of required components
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Charts)
 
 # Create the executable from your source file
 add_executable(dashboard main.cpp)
 
-# Link the Qt 6 libraries to your executable
-target_link_libraries(dashboard PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)
+# Link the Charts library to your executable
+target_link_libraries(dashboard PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Charts)

@@ -1,40 +1,80 @@
 #include <QApplication>
 #include <QMainWindow>
-#include <QWidget>
 #include <QVBoxLayout>
 #include <QPushButton>
-#include <QLabel>
 #include <QTimer>
-#include <QString>
+#include <QRandomGenerator>
 
-class MinimalDashboard : public QMainWindow {
+// Qt Charts specific headers
+#include <QChart>
+#include <QChartView>
+#include <QLineSeries>
+#include <QValueAxis>
+
+class ChartDashboard : public QMainWindow {
 public:
-    MinimalDashboard(QWidget *parent = nullptr) : QMainWindow(parent), counter(0) {
-        // 1. Set up the central widget and layout
+    ChartDashboard(QWidget *parent = nullptr) : QMainWindow(parent), tickCount(0) {
         QWidget *centralWidget = new QWidget(this);
         QVBoxLayout *layout = new QVBoxLayout(centralWidget);
 
-        // 2. Create UI elements
-        QLabel *sensorLabel = new QLabel("Sensor Value: 0", this);
+        // 1. Set up the Data Series
+        QLineSeries *series = new QLineSeries();
+        series->setName("Temperature (°C)");
+
+        // 2. Set up the Chart logic
+        QChart *chart = new QChart();
+        chart->addSeries(series);
+        chart->setTitle("Live Sensor Data");
+        chart->setAnimationOptions(QChart::NoAnimation); // Disabling animation improves performance for live data
+
+        // 3. Set up the Axes
+        QValueAxis *axisX = new QValueAxis();
+        axisX->setTitleText("Time (Ticks)");
+        axisX->setRange(0, 30); // Initial display window of 30 ticks
+        axisX->setLabelFormat("%d");
+
+        QValueAxis *axisY = new QValueAxis();
+        axisY->setTitleText("Value");
+        axisY->setRange(0, 100);
+
+        // Attach axes to the chart and the series
+        chart->addAxis(axisX, Qt::AlignBottom);
+        chart->addAxis(axisY, Qt::AlignLeft);
+        series->attachAxis(axisX);
+        series->attachAxis(axisY);
+
+        // 4. Set up the Visual View
+        QChartView *chartView = new QChartView(chart);
+        chartView->setRenderHint(QPainter::Antialiasing); // Smooths the jagged edges of the line
+
+        // 5. Basic Control Button
         QPushButton *toggleButton = new QPushButton("Start Simulation", this);
 
-        // 3. Add elements to the layout and set the central widget
-        layout->addWidget(sensorLabel);
+        // Assemble the UI
+        layout->addWidget(chartView);
         layout->addWidget(toggleButton);
         setCentralWidget(centralWidget);
 
-        // 4. Set up the timer for data simulation
+        // 6. Data Simulation Engine
         QTimer *timer = new QTimer(this);
-        timer->setInterval(1000); // 1000 milliseconds = 1 second
+        timer->setInterval(1000); // Generates data every 1 second
 
-        // 5. Connect the timer to update the label
-        connect(timer, &QTimer::timeout, this, [this, sensorLabel]() {
-            counter++;
-            sensorLabel->setText("Sensor Value: " + QString::number(counter));
+        connect(timer, &QTimer::timeout, this, [=]() {
+            tickCount++;
+            
+            // Generate a random value between 20 and 80
+            qreal value = QRandomGenerator::global()->bounded(20, 81);
+            series->append(tickCount, value);
+
+            // Dynamically manage the data size (Keep only the last 30 points)
+            if (series->count() > 30) {
+                series->removePoints(0, 1); // Remove the oldest data point
+                axisX->setRange(tickCount - 30, tickCount); // Scroll the X axis forward
+            }
         });
 
-        // 6. Connect the button to control the timer
-        connect(toggleButton, &QPushButton::clicked, this, [timer, toggleButton]() {
+        // 7. Button Logic
+        connect(toggleButton, &QPushButton::clicked, this, [=]() {
             if (timer->isActive()) {
                 timer->stop();
                 toggleButton->setText("Start Simulation");
@@ -46,17 +86,13 @@ public:
     }
 
 private:
-    int counter;
+    int tickCount;
 };
 
 int main(int argc, char *argv[]) {
-    // QApplication manages the GUI application's control flow and main settings
     QApplication app(argc, argv);
-    
-    MinimalDashboard window;
-    window.setWindowTitle("Take-Home Challenge Foundation");
-    window.resize(300, 150);
+    ChartDashboard window;
+    window.resize(600, 400);
     window.show();
-    
     return app.exec();
 }

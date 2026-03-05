@@ -108,7 +108,10 @@ dashboard_EXTERNAL_OBJECTS =
 dashboard: CMakeFiles/dashboard.dir/dashboard_autogen/mocs_compilation.cpp.o
 dashboard: CMakeFiles/dashboard.dir/main.cpp.o
 dashboard: CMakeFiles/dashboard.dir/build.make
+dashboard: /usr/lib/x86_64-linux-gnu/libQt6Charts.so.6.2.4
+dashboard: /usr/lib/x86_64-linux-gnu/libQt6OpenGLWidgets.so.6.2.4
 dashboard: /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.2.4
+dashboard: /usr/lib/x86_64-linux-gnu/libQt6OpenGL.so.6.2.4
 dashboard: /usr/lib/x86_64-linux-gnu/libQt6Gui.so.6.2.4
 dashboard: /usr/lib/x86_64-linux-gnu/libQt6Core.so.6.2.4
 dashboard: /usr/lib/x86_64-linux-gnu/libGLX.so
